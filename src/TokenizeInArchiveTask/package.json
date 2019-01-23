@@ -1,0 +1,14 @@
+{
+  "name": "tokenize-in-archive",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "azure-pipelines-task-lib": "^2.7.7",
+    "jszip": "^3.1.5"
+  },
+  "devDependencies": {
+    "@types/jszip": "^3.1.4",
+    "@types/node": "^10.12.18",
+    "@types/q": "^1.5.1"
+  }
+}

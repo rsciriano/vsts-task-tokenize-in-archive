@@ -13,7 +13,7 @@
   "version": {
     "Major": 1,
     "Minor": 0,
-    "Patch": 0
+    "Patch": 2
   },
   "demands": [],
   "inputs": [
@@ -71,6 +71,10 @@
     "PowerShell3": {
       "target": "$(currentDirectory)\\TokenizeInArchive.ps1",
       "workingDirectory": "$(currentDirectory)"
+    },
+    "Node": {
+      "target": "$(currentDirectory)/TokenizeInArchive.js",
+      "argumentFormat": ""
     }
   }
 }
