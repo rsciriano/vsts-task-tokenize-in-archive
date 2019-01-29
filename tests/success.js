@@ -7,7 +7,7 @@ var taskPath = path.join(__dirname, '../src/TokenizeInArchiveTask', 'TokenizeInA
 var runner = new mockrun.TaskMockRunner(taskPath);
 runner.setInput('PathToArchives', '/srcDir');
 runner.setInput('Packages', 'AppSettings.zip');
-runner.setInput('FilesToTokenize', 'AppSettings.json');
+runner.setInput('FilesToTokenize', '**/**/AppSettings.json');
 var answers = {
     checkPath: {},
     find: {},
@@ -69,5 +69,5 @@ runner.registerMock('fs', fs);
 // set variables
 process.env["PROPERTY1"] = "Property1_Value";
 process.env["PROPERTY2"] = "Property2_Value";
-process.env["PROPERTY3"] = "Property3_Value";
+process.env["APPNAME"] = "RobApp";
 runner.run();

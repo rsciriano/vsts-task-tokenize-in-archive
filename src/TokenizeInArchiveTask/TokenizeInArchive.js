@@ -48,11 +48,12 @@ function run() {
             let matchedPaths = tl.match(allPaths, packages, pathToArchives); // default match options
             let matchedFiles = matchedPaths.filter((itemPath) => !tl.stats(itemPath).isDirectory()); // filter-out directories        
             if (matchedFiles.length > 0) {
-                matchedFiles.forEach((file) => {
+                matchedFiles.forEach((packageFile) => {
                     // read each zip file
-                    fs_1.default.readFile(file, (err, data) => {
+                    fs_1.default.readFile(packageFile, (err, data) => {
                         if (err)
                             throw err;
+                        console.log('Package file found: ', packageFile);
                         jszip_1.default.loadAsync(data).then(zip => {
                             let zipedAllPaths = Object.keys(zip.files);
                             let zipedMatchedPaths = tl.match(zipedAllPaths, filesToTokenize);
@@ -60,12 +61,11 @@ function run() {
                             if (zipedMatchedFiles.length > 0) {
                                 let tasks = [];
                                 zipedMatchedFiles.forEach((contentPath) => {
-                                    console.log('FileToTokenize:', contentPath);
-                                    // ...
+                                    console.log(`Tokenizing file '${contentPath}' in '${packageFile}'`);
                                     let zipObject = zip.files[contentPath];
                                     let t = zipObject.async("text");
                                     t.then(contents => {
-                                        console.log('Contents:', contents);
+                                        tl.debug(`File contents: ${contents}`);
                                         let reg = new RegExp(tokenRegex, "g");
                                         // loop through each match
                                         let match;
@@ -97,13 +97,12 @@ function run() {
                                 });
                                 // Wait for tokenize package contents
                                 Promise.all(tasks).then(() => {
-                                    // 
                                     zip
                                         .generateNodeStream({ type: 'nodebuffer', streamFiles: true })
-                                        .pipe(fs_1.default.createWriteStream(file))
+                                        .pipe(fs_1.default.createWriteStream(packageFile))
                                         .on('finish', function () {
-                                        console.log(file, " written.");
-                                        tl.setResult(tl.TaskResult.Succeeded, file + " written", false);
+                                        console.log(`${packageFile} updated`);
+                                        tl.setResult(tl.TaskResult.Succeeded, `${packageFile} updated`, false);
                                     });
                                 });
                             }

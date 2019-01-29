@@ -47,11 +47,13 @@ async function run() {
 
         if (matchedFiles.length > 0) {
 
-            matchedFiles.forEach((file: string) => {
+            matchedFiles.forEach((packageFile: string) => {
 
                 // read each zip file
-                fs.readFile(file, (err, data) => {
+                fs.readFile(packageFile, (err, data) => {
                     if (err) throw err;
+                    
+                    console.log('Package file found: ', packageFile);
 
                     JSZip.loadAsync(data).then(zip => {
 
@@ -65,16 +67,13 @@ async function run() {
                             
                             zipedMatchedFiles.forEach((contentPath: string) => {
 
-                                console.log('FileToTokenize:', contentPath);
+                                console.log(`Tokenizing file '${contentPath}' in '${packageFile}'`);
     
-                                // ...
                                 let zipObject = zip.files[contentPath];
-    
                                 let t = zipObject.async("text");
                                 t.then(contents => {
                                     
-                                    console.log('Contents:', contents);    
-
+                                    tl.debug(`File contents: ${contents}`);    
 
                                     let reg = new RegExp(tokenRegex, "g");
                     
@@ -101,8 +100,6 @@ async function run() {
                                         }
                                     }
 
-
-
                                     zip.file(contentPath, newContents);
     
                                 });
@@ -113,13 +110,12 @@ async function run() {
                             // Wait for tokenize package contents
                             Promise.all(tasks).then(() => {
 
-                                // 
                                 zip
                                 .generateNodeStream({type:'nodebuffer',streamFiles:true})
-                                .pipe(fs.createWriteStream(file))
+                                .pipe(fs.createWriteStream(packageFile))
                                 .on('finish', function () {
-                                    console.log(file, " written.");
-                                    tl.setResult(tl.TaskResult.Succeeded, file + " written", false);
+                                    console.log(`${packageFile} updated`);
+                                    tl.setResult(tl.TaskResult.Succeeded, `${packageFile} updated`, false);
                                 }); 
                             });
                         }

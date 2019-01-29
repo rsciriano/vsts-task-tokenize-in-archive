@@ -8,7 +8,7 @@ let runner: mockrun.TaskMockRunner = new mockrun.TaskMockRunner(taskPath);
 
 runner.setInput('PathToArchives', '/srcDir');
 runner.setInput('Packages', 'AppSettings.zip');
-runner.setInput('FilesToTokenize', 'AppSettings.json');
+runner.setInput('FilesToTokenize', '**/AppSettings.json');
 
 let answers: mockanswer.TaskLibAnswers =  {
     checkPath:  { },
